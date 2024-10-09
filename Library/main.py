@@ -7,6 +7,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from string import Template
 from connecting_to_database import conecting, get_data
+from book_manager import add_data, delete_data
 
 
 def get_borrowers():
@@ -21,8 +22,9 @@ def get_borrowers():
             - book_title (str): The title of the borrowed book.
             - return_at (str): The date the book is due to be returned.
     """
-    cursor = conecting()
+    cursor, conncet = conecting()
     data = get_data(cursor)
+    conncet.close()
     return data
 
 def send_email(borrowers_list):
@@ -65,6 +67,47 @@ def send_email(borrowers_list):
             server.sendmail(sender, receiver, message.as_string())
             print(f"E-mail wysłany do: {receiver, name}")
 
+
+def menu():
+    while True:
+        
+            choice = int(input("Witaj w bibliotece, wybierz nr zeby przejsc dalej\n"
+                "1- Wyświetl wszystkie książki\n"
+                "2-Dodaj książke\n"
+                "3-Usuń książke\n"
+                "4-Zamknij program: "))
+            if not (choice >= 1 and choice <= 4):
+                raise ValueError("Musisz wybrać nr od 1 do 4: ")
+        
+            if choice == 1:
+                cursor, connect = conecting()
+                cursor.execute("""
+                            Select * FROM books
+                            """)
+                books = cursor.fetchall()
+                for book in books:
+                    print(book)
+                    connect.close()
+
+            elif choice == 2:
+                cursor, connect = conecting()
+                add_data(cursor)
+                connect.commit()
+                connect.close()
+
+            elif choice == 3:
+                cursor, connect = conecting()
+                delete_data(cursor)
+                connect.commit()
+                connect.close()
+            elif choice == 4:
+                print('zamykanie')
+                break
+                
+
+        
+
 if __name__ == "__main__":
     borrowers = get_borrowers()
     send_email(borrowers)
+    start_program = menu()
