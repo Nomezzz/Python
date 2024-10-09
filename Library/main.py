@@ -69,45 +69,50 @@ def send_email(borrowers_list):
 
 
 def menu():
+    """
+    Displays a menu for managing a library system and handles user input.
+
+    The function prompts the user to choose an action from the menu, including 
+    displaying all books, adding a new book, deleting a book, or exiting the program. 
+    Based on the user's choice, it calls the appropriate functions to perform the 
+    selected action.
+
+    Returns:
+        None"""
     while True:
-        
-            choice = int(input("Witaj w bibliotece, wybierz nr zeby przejsc dalej\n"
-                "1- Wyświetl wszystkie książki\n"
-                "2-Dodaj książke\n"
-                "3-Usuń książke\n"
-                "4-Zamknij program: "))
-            if not (choice >= 1 and choice <= 4):
-                raise ValueError("Musisz wybrać nr od 1 do 4: ")
-        
-            if choice == 1:
-                cursor, connect = conecting()
-                cursor.execute("""
+        choice = int(input("Witaj w bibliotece, wybierz nr zeby przejsc dalej\n"
+            "1- Wyświetl wszystkie książki\n"
+            "2-Dodaj książke\n"
+            "3-Usuń książke\n"
+            "4-Zamknij program: "))
+        if choice not in range(1,5):
+            raise ValueError("Musisz wybrać nr od 1 do 4: ")
+        if choice == 1:
+            cursor, connect = conecting()
+            cursor.execute("""
                             Select * FROM books
                             """)
-                books = cursor.fetchall()
-                for book in books:
-                    print(book)
-                    connect.close()
-
-            elif choice == 2:
-                cursor, connect = conecting()
-                add_data(cursor)
-                connect.commit()
+            books = cursor.fetchall()
+            for book in books:
+                print(book)
                 connect.close()
 
-            elif choice == 3:
-                cursor, connect = conecting()
-                delete_data(cursor)
-                connect.commit()
-                connect.close()
-            elif choice == 4:
-                print('zamykanie')
-                break
-                
+        elif choice == 2:
+            cursor, connect = conecting()
+            add_data(cursor)
+            connect.commit()
+            connect.close()
 
-        
+        elif choice == 3:
+            cursor, connect = conecting()
+            delete_data(cursor)
+            connect.commit()
+            connect.close()
+        elif choice == 4:
+            print('zamykanie')
+            break
 
 if __name__ == "__main__":
     borrowers = get_borrowers()
     send_email(borrowers)
-    start_program = menu()
+    menu()

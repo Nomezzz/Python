@@ -43,7 +43,7 @@ def add_data(cursor):
             VALUES (?, ?, ?, ?)""", (email, name, book_title, return_at))
 
         print(f'Książka o tytule {book_title} została dodana.')
-        break  
+        break
 
 
 
@@ -70,4 +70,3 @@ def delete_data(cursor):
                     DELETE FROM books WHERE id = ?
                         """, (book_id))
     print(f'Książka o nr id {book_id} została usunięta  ')
-        
