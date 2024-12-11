@@ -3,9 +3,12 @@ from pynput.keyboard import Listener as KeyboardListener
 from pynput import keyboard
 import json
 from datetime import datetime
+import time
 
-running = True  # Flaga działania
-events = []  # Lista do przechowywania zdarzeń
+# Flaga działania
+running = True  
+# Lista do przechowywania zdarzeń
+events = []  
 
 # Funkcja zapisu do pliku JSON
 def save_to_file(filename="events.json"):
@@ -20,7 +23,7 @@ def on_move(x, y):
         "event": "mouse_move",
         "position": {"x": x, "y": y}
     }
-    print(f"position{x, y}")
+    print(f"Pozycja myszy: {x, y}")
     events.append(event)
 
 def on_click(x, y, button, pressed):
@@ -30,9 +33,8 @@ def on_click(x, y, button, pressed):
         "position": {"x": x, "y": y},
         "button": str(button),
         "pressed": pressed
-        
     }
-    print(button)
+    print(f"Mysz kliknięta: {button}, Pozycja: {x, y}")
     events.append(event)
     
     if not running:
@@ -46,14 +48,14 @@ def on_press(key):
             "event": "key_press",
             "key": key.char
         }
-        print(f'Normalny klawisz wcisniety: {key.char}')
+        print(f'Normalny klawisz wciśnięty: {key.char}')
     except AttributeError:
         event = {
             "time": datetime.now().isoformat(),
             "event": "key_press",
             "key": str(key)
         }
-        print(f'Specjalny klawisz wcisniety: {key}')
+        print(f'Specjalny klawisz wciśnięty: {key}')
     events.append(event)
 
 def on_release(key):
@@ -71,15 +73,16 @@ def on_release(key):
         save_to_file()  # Zapisz dane przed zatrzymaniem
         return False
 
-# Uruchomienie nasłuchiwania
-mouse_listener = MouseListener(on_move=on_move, on_click=on_click)
-keyboard_listener = KeyboardListener(on_press=on_press, on_release=on_release)
+# Funkcja uruchamiająca mapowanie
+def start_mapping():
+    global running
+    running = True
+    mouse_listener = MouseListener(on_move=on_move, on_click=on_click)
+    keyboard_listener = KeyboardListener(on_press=on_press, on_release=on_release)
+    mouse_listener.start()
+    keyboard_listener.start()
 
-mouse_listener.start()
-keyboard_listener.start()
-
-print('Zaczynam nasłuchiwać... Naciśnij ESC, aby zatrzymać.')
-
-mouse_listener.join()
-keyboard_listener.join()
-
+    print('Zaczynam nasłuchiwać... Naciśnij ESC, aby zatrzymać.')
+    
+    mouse_listener.join()
+    keyboard_listener.join()
