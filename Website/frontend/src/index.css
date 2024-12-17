@@ -25,10 +25,11 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+  justify-content: center; /* Wyśrodkowanie poziome */
+  align-items: center;    /* Wyśrodkowanie pionowe */
+  min-height: 100vh;      /* Wypełnia całą wysokość okna przeglądarki */
   min-width: 320px;
+  background-color: #242424;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
